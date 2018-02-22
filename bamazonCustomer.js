@@ -60,7 +60,24 @@ var shoppingCart = function () {
 	}
 
 	}]).then(function(answer) {
-		
+
+// * -- Once the customer has placed the order: Your application should...
+  // * Check if your store has enough quantity of the product to meet the customer's request.
+  //   If not, you should respond to the user by saying: "Insufficient quantity" and prevent the order from going through.
+  // * If your store DOES have enough of the product to meet the customer's request, you should fulfill their order.
+  //   This means that you should show them the total cost of their puchase. Then update the SQL database to reflect the remaining quantity. --
+
+  	var query = "SELECT * FROM products WHERE item_id=" + answer.quantity;
+  	connection.query(query, function(err, res) {
+  		if (answer.quantity <= res) {
+  			for (var = i; i = res.length; i++) {
+  				console.log("We currently have " + res[i].stockQuantity + " " + res[i].productName + " is now being processed.");
+  			}
+  		} else {
+  			console.log("Not enough of this product in stock.")
+  		}
+  			displayProducts();
+  		})
 	})
 }
 
