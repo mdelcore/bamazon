@@ -29,7 +29,7 @@ var displayProducts = function() {
 	var query = "SELECT * FROM products"
 	connection.query(query, function(err, res) {
 		for (var i = 0; i < res.length; i++) {
-			table.push([res[i].item_id, res[i].productName,res[i].departmentName, res[i].price, res[i].stockQuantity]);
+			table.push([res[i].item_id, res[i].productName,res[i].departmentName, res[i].price, res[i].stock_quantity]);
 		}
 		console.log(table.toString());
 		shoppingCart();
@@ -54,7 +54,7 @@ var shoppingCart = function () {
 			}
 		}
 	}, {
-		name: "stockQuantity",
+		name: "stock_quantity",
 		type: "input",
 		message: "How many would you like to buy?",
 		validate: function(value) {
@@ -72,32 +72,52 @@ var shoppingCart = function () {
   //   If not, you should respond to the user by saying: "Insufficient quantity" and prevent the order from going through.
   // * If your store DOES have enough of the product to meet the customer's request, you should fulfill their order.
   //   This means that you should show them the total cost of their puchase. Then update the SQL database to reflect the remaining quantity. --
+        return new Promise(function(resolve, reject) {
+            connection.query('SELECT * FROM products WHERE ?', { item_id: answer.item }, function(err, res) {
+                if (err) reject(err);
+                resolve(res);
+            });
+            // Then if selected quanitity is valid, save to a local object, else console log error
+        }).then(function(result) {
+            var savedData = {};
 
-  	var query = "SELECT * FROM products WHERE item_id=" + answer.stockQuantity;
-  	// console.log(answer.stockQuantity);
-  	connection.query(query, function(err, res) {
-  		// console.log(res);
-  		if (answer.stockQuantity <= res) {
-  			for (var i = 0; i < res.length; i++) {
-  				console.log("We currently have " + res[i].stockQuantity + " " + res[i].productName);
-  				console.log("Thank you for your business!" + "Your order of " + res[i].stockQuantity + " " + res[i].productName + " " + res[i].price + " is now being processed.");
-  			}
-  		} else {
-  			console.log("\n");
-  			console.log("\x1b[45m%s\x1b[0m", "Not enough of this product in stock.");
-  			console.log("\n");
-  		}
-  			// displayProducts();
-  		})
-	})
+            if (parseInt(answer.quantity) <= parseInt(result[0].stock_quantity)) {
+                savedData.answer = answer;
+                savedData.result = result;
+            } else if (parseInt(answer.quantity) > parseInt(result[0].stock_quantity)) {
+                console.log('Insufficient quantity!');
+            } else {
+                console.log('An error occurred, exiting Bamazon, your order is not complete.');
+            }
+            
+            return savedData;
+            // Update the SQL DB and console log messages for completion.
+        }).then(function(savedData) {
+            if (savedData.answer) {
+                var updatedQuantity = parseInt(savedData.result[0].stock_quantity) - parseInt(savedData.answer.quantity);
+                var itemId = savedData.answer.item;
+                var totalCost = parseInt(savedData.result[0].price) * parseInt(savedData.answer.quantity);
+                connection.query('UPDATE products SET ? WHERE ?', [{
+                    stock_quantity: updatedQuantity
+                }, {
+                    item_id: itemId
+                }], function(err, res) {
+                    if (err) throw err;
+                    console.log('Your order total cost $' + totalCost + '. Thank you for shopping with Bamazon!');
+                    connection.destroy();
+                });
+            } else {
+                // Recursion to re-enter store
+                enterStore();
+            }
+            // catch errors
+        }).catch(function(err) {
+            console.log(err);
+            connection.destroy();
+        });
+        // catch errors
+    }).catch(function(err) {
+        console.log(err);
+        connection.destroy();
+    });
 }
-
-
-
-
-
-
-
-
-
-
