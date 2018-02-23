@@ -17,8 +17,28 @@ connection.connect(function(err) {
 	if (err) throw err;
 	// console.log("connected as id " + connection.threadId);
   	console.log("\x1b[45m%s\x1b[0m", "Welcome to Bamazon! Here are our products:")
-  	displayProducts();
+  	// displayProducts();
+  	enterStore();
 })
+
+// function to enter store
+function enterStore() {
+	inquirer.prompt([{
+		name: 'entrance',
+		message: 'Would you like to shop with us today?',
+		type: 'list',
+		choices: ['yes', 'No']
+
+	}]).then(function(answer) {
+		if (answer.entrance === 'Yes') {
+			displayProducts();
+		// } else {
+		// 	console.log('Please come back soon!  --Bamazon');
+		// 	connection.destroy();
+		// 	return;
+		}
+	});
+}
 
 // * -- display all items for sale
 var displayProducts = function() {
