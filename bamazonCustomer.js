@@ -1,6 +1,7 @@
 // Require NPM packages
 var mysql = require('mysql');
 var inquirer = require('inquirer');
+var Table = require('cli-table');
 
 // Setup connection to SQL server
 var connection = mysql.createConnection({
@@ -14,6 +15,10 @@ var connection = mysql.createConnection({
 
 // Set counter for total number of products
 var numberOfProductTypes = 0;
+var table = new Table ({
+    head: ['Item ID', 'Product Name', 'Price']
+    , colWidths: [12, 30, 12]
+});
 
 // Connect to DB
 connection.connect(function(err) {
@@ -30,8 +35,9 @@ connection.connect(function(err) {
     }).then(function(result) {
         result.forEach(function(item) {
             numberOfProductTypes++;
-            console.log('Item ID: ' + item.item_id + ' || Product Name: ' + item.product_name + ' || Price: ' + item.price);
+            table.push([item.item_id, item.product_name, item.price]);
         });
+        console.log(table.toString());
         // Enter the store
     }).then(function() {
         return enterStore();
