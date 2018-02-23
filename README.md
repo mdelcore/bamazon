@@ -1,7 +1,7 @@
 # Bamazon
 This is Homework 10 for the University of Denver Coding Boot Camp. It is a dual CLI app that uses a SQL database to poorly emulate amazon. 
 
-Click [**here**](https://youtu.be/w1t5tky75OA) to watch a video walkthrough of the applications.
+Click [**here**](https://youtu.be/_qq_vPxSPpw) to watch a video walkthrough of the applications.
 
 ## Setup
 First clone this repo to your local directory.
