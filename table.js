@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
     user: 'root',
     password: 'root',
     database: 'bamazon',
-    socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock"
+   socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock"
 });
 
 // Set counter for total number of products
@@ -30,7 +30,7 @@ connection.connect(function(err) {
     }).then(function(result) {
         result.forEach(function(item) {
             numberOfProductTypes++;
-            console.log('Item ID: ' + item.item_id + ' || Product Name: ' + item.productName + ' || Price: ' + item.price);
+            console.log('Item ID: ' + item.item_id + ' || Product Name: ' + item.product_name + ' || Price: ' + item.price);
         });
         // Enter the store
     }).then(function() {
@@ -100,10 +100,10 @@ function menu() {
         }).then(function(result) {
             var savedData = {};
 
-            if (parseInt(answer.quantity) <= parseInt(result[0].stockQuantity)) {
+            if (parseInt(answer.quantity) <= parseInt(result[0].stock_quantity)) {
                 savedData.answer = answer;
                 savedData.result = result;
-            } else if (parseInt(answer.quantity) > parseInt(result[0].stockQuantity)) {
+            } else if (parseInt(answer.quantity) > parseInt(result[0].stock_quantity)) {
                 console.log('Insufficient quantity!');
             } else {
                 console.log('An error occurred, exiting Bamazon, your order is not complete.');
@@ -113,11 +113,11 @@ function menu() {
             // Update the SQL DB and console log messages for completion.
         }).then(function(savedData) {
             if (savedData.answer) {
-                var updatedQuantity = parseInt(savedData.result[0].stockQuantity) - parseInt(savedData.answer.quantity);
+                var updatedQuantity = parseInt(savedData.result[0].stock_quantity) - parseInt(savedData.answer.quantity);
                 var itemId = savedData.answer.item;
                 var totalCost = parseInt(savedData.result[0].price) * parseInt(savedData.answer.quantity);
                 connection.query('UPDATE products SET ? WHERE ?', [{
-                    stockQuantity: updatedQuantity
+                    stock_quantity: updatedQuantity
                 }, {
                     item_id: itemId
                 }], function(err, res) {
