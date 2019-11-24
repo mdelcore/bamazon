@@ -1,9 +1,7 @@
 # Bamazon
-This is Homework 10 for the University of Denver Coding Boot Camp. It is a dual CLI app that uses a SQL database to poorly emulate amazon. 
+Bamazon is a dual CLI app that uses a SQL database to emulate amazon. 
 
-Click [**here**](https://youtu.be/_qq_vPxSPpw) to watch a video walkthrough of the applications.
-
-## Setup
+## App Setup
 First clone this repo to your local directory.
 
 Next, navigate to your repo in your command terminal, and enter:
@@ -24,6 +22,6 @@ You are now ready to shop Bamazon.
 
 ## Overview
 
-As mentioned in the video walkthrough, there are two CLI applications, `bamazonCustomer.js`.
+There are two CLI applications, `bamazonCustomer.js`.
 
 To run them, enter `node bamazonCustomer.js` and then press enter to access the CLI.
